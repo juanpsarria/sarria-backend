@@ -1,15 +1,14 @@
 [
   {
-    "id": 1,
-    "products": [
-      {
-        "product": 10,
-        "quantity": 1
-      },
-      {
-        "product": 10,
-        "quantity": 1
-      }
-    ]
+    "id": "4f9ada8e-6790-4853-b9cf-ab6bb02f5e20",
+    "products": []
+  },
+  {
+    "id": "8e3286a7-57a8-4b33-b9f8-7e1154d1fcb4",
+    "products": []
+  },
+  {
+    "id": "bdd25240-7f14-4430-884b-90407580b0e7",
+    "products": []
   }
 ]

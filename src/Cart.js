@@ -1,5 +1,5 @@
 export class Cart{
-    constructor({id}) {
+    constructor({id, products}) {
         this.id = id
         this.products = []
     }
