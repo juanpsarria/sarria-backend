@@ -25,7 +25,7 @@ export class ProductManager {
         await this.#readProductsFile()
 
         //validar que no haya campos vacíos
-        if(product.title === '' || product.description === '' || product.price === '' || product.thumbnail === '' || product.code === '' || product.stock === ''){
+        if(product.title === '' || product.description === '' || product.category === '' || product.price === '' || product.code === '' || product.stock === ''){
             throw new Error('Missing fields.')
         }
 

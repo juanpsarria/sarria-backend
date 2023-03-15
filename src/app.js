@@ -1,40 +1,26 @@
-import { ProductManager } from './ProductManager.js'
 import express from 'express'
+import { apiProducts } from '../router/products.js'
+import { apiCarts } from '../router/carts.js'
 
 const app = express()
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 
-const manager = new ProductManager('../desafio-backend-sarria/database/products.json')
+app.use(apiProducts)
+app.use(apiCarts)
 
-const products = await manager.getProducts()
-
-//console.log(products)
-
-//console.log(products.length)
-
-app.get('/products', (req, res) => {
-    let limit = req.query.limit
-
-    if(!limit){
-        return res.json({products})
+app.use((error, req, res, next) => {
+    switch (error.message) {
+        case 'id no encontrado':
+            res.status(404)
+            break
+        case 'falta un argumento':
+            res.status(400)
+            break
+        default:
+            res.status(500)
     }
-
-    if(limit > products.length){
-        return res.send({error: 'El número ingresado supera la cantidad de productos en existencia.'})
-    }
-    
-    let selectedLimit = products.slice(0, limit)
-    res.json({products: selectedLimit})
-})
-
-app.get('/products/:pid', (req, res) =>{
-    const pid = parseInt(req.params.pid)
-    const product = products.find(e => e.id === pid)
-
-    if(!product){
-        return res.send({ error: 'El producto ingresado no existe.' })
-    }
-
-    res.json({product})
+    res.json({ message: error.message })
 })
 
 const server = app.listen(8080)
