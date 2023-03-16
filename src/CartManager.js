@@ -54,27 +54,29 @@ export class CartManager {
         await this.#readCartsFile()
         await this.#readProductsFile()
 
+        const cart = this.#carts.findIndex(c => c.id === cid)
+        if(cart === -1){
+            throw new Error('Cart ID does not exist.')
+        }
+
         const product = this.#products.find(p => p.id === pid)
         if(!product){
             throw new Error('Product ID does not exist.')
         }
-        const cart = this.#carts.findIndex(c => c.id === cid)
-        if(!cart){
-            throw new Error('Cart ID does not exist.')
-        }
 
-        const prodInCart = this.#carts[cart].products.findIndex(e => e.id === pid)
-        if(prodInCart === -1){
+        //suma un producto nuevo con cantidad 1
+        const index = this.#carts[cart].products.findIndex(e => e.id === pid)
+
+        //suma cantidad+1 al 1er elemento del array
+        //const index = this.#carts[cart].products.findIndex(e => e.id === this.#carts[cart].products.product)
+
+        if(index === -1){
             this.#carts[cart].products.push({product: pid, quantity: 1})
-            await this.#writeCartsFile
-            return this.#carts[cart].products
         } else {
-            this.#carts[cart].products.splice(prodInCart, 1, {
-                ...prodInCart, quantity: this.#carts[cart].products[prodInCart].quantity ++
-            })
-            await this.#writeCartsFile
-            return this.#carts[cart].products
+            this.#carts[cart].products[index].quantity++
         }
+        await this.#writeCartsFile()
+        return this.#carts[cart].products
     }
 }
 

@@ -67,7 +67,7 @@ export class ProductManager {
         //modifica un objeto que se encuentra por id, sin modificar la misma
         const product = this.#products.find(e => e.id === productId);
         if(!product){
-            throw new Error('ID not found.')
+            throw new Error('Product ID not found.')
         }
 
         const updatedProduct = new Product({...product, ...fields})
