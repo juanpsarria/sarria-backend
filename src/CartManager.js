@@ -65,10 +65,7 @@ export class CartManager {
         }
 
         //suma un producto nuevo con cantidad 1
-        const index = this.#carts[cart].products.findIndex(e => e.id === pid)
-
-        //suma cantidad+1 al 1er elemento del array
-        //const index = this.#carts[cart].products.findIndex(e => e.id === this.#carts[cart].products.product)
+        const index = this.#carts[cart].products.findIndex(e => e.product === pid)
 
         if(index === -1){
             this.#carts[cart].products.push({product: pid, quantity: 1})

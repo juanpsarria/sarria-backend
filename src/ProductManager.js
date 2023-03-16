@@ -24,11 +24,6 @@ export class ProductManager {
     async addProduct(product) {
         await this.#readProductsFile()
 
-        //validar que no haya campos vacíos
-        if(product.title === '' || product.description === '' || product.category === '' || product.price === '' || product.code === '' || product.stock === ''){
-            throw new Error('Missing fields.')
-        }
-
         //validar que no se repita el código de producto
         const repeatedCode = this.#products.some(item => item.code === product.code);
         if(repeatedCode){
@@ -38,9 +33,13 @@ export class ProductManager {
         //asignarle un id al producto
         this.#products.length === 0 ? product.id = 1 : product.id = this.#products[this.#products.length - 1].id + 1;
 
+        //se asigna valor true a status
+        product.status = true
+
         //push
         this.#products.push(product)
         await this.#writeProductsFile()
+        return product
     }
 
     async getProducts(){
@@ -55,7 +54,7 @@ export class ProductManager {
 
         const product = this.#products.find(e => e.id === productId);
         if(!product){
-            throw new Error('ID not found.')
+            throw new Error('Product ID not found.')
         }
 
         return product
@@ -69,12 +68,14 @@ export class ProductManager {
         if(!product){
             throw new Error('Product ID not found.')
         }
-
-        const updatedProduct = new Product({...product, ...fields})
+        
         const index = this.#products.findIndex(p => p.id === productId)
+        const updatedProduct = new Product({...product, ...fields})
+        
         this.#products[index] = updatedProduct
         this.#products[index].id = productId
         await this.#writeProductsFile()
+        return updatedProduct
     }
 
     async deleteProduct(productId){

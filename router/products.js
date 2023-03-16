@@ -36,7 +36,7 @@ apiProducts.get('/api/products/:pid', async (req, res, next) => {
 
 apiProducts.post('/api/products', async (req, res, next) => {
     try {
-        const newProduct = new Product({ ...req.body, status: true })
+        const newProduct = new Product({ ...req.body, "status": true })
         const addNewProduct = await productsManager.addProduct(newProduct)
         res.json(addNewProduct)
     } catch (error) {
