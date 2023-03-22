@@ -1,5 +1,5 @@
 export class Product {
-    constructor({title, description, code, price, status, stock, category, thumbnail}) {
+    constructor({title, description, code, price, status, stock, category, thumbnail, id}) {
         this.title = String(title)
         this.description = String(description)
         this.code = String(code)
@@ -7,7 +7,8 @@ export class Product {
         this.status = Boolean(status)
         this.stock = Number(stock)
         this.category = String(category)
-        this.thumbnail = [thumbnail]
+        this.thumbnail = String(thumbnail)
+        this.id = id
 
         if(!title){
             throw new Error('Title is missing.')

@@ -7,30 +7,18 @@
     "status": true,
     "stock": 25,
     "category": "Sin categoría",
-    "thumbnail": [
-      [
-        [
-          [
-            "[object Object]"
-          ]
-        ]
-      ]
-    ],
+    "thumbnail": "",
     "id": 1
   },
   {
-    "title": "producto prueba 2",
+    "title": "producto prueba ",
     "description": "Este es un producto prueba",
     "code": "asd456",
     "price": 200,
     "status": true,
     "stock": 25,
     "category": "Sin categoría",
-    "thumbnail": [
-      {
-        "thumbnail": "Sin imagen"
-      }
-    ],
+    "thumbnail": [],
     "id": 2
   },
   {
@@ -41,26 +29,7 @@
     "status": true,
     "stock": 25,
     "category": "Sin categoría",
-    "thumbnail": [
-      {
-        "thumbnail": "Sin imagen"
-      }
-    ],
+    "thumbnail": [],
     "id": 3
-  },
-  {
-    "title": "producto prueba 4",
-    "description": "Este es un producto prueba",
-    "code": "asd147",
-    "price": 200,
-    "status": true,
-    "stock": 25,
-    "category": "Sin categoría",
-    "thumbnail": [
-      {
-        "thumbnail": "Sin imagen"
-      }
-    ],
-    "id": 4
   }
 ]

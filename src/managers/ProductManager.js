@@ -1,7 +1,7 @@
-import { Product } from "./Product.js"
 import fs from 'fs/promises'
+import { Product } from './Product.js'
 
-export class ProductManager {
+class ProductManager {
     #path
     #products
 
@@ -35,6 +35,7 @@ export class ProductManager {
 
         //se asigna valor true a status
         product.status = true
+        product.thumbnail = []
 
         //push
         this.#products.push(product)
@@ -60,22 +61,21 @@ export class ProductManager {
         return product
     }
 
-    async updateProduct(productId, fields){
-        //recupera productos por id
+    async updateProduct(productId, body){
         await this.#readProductsFile()
+
         //modifica un objeto que se encuentra por id, sin modificar la misma
         const product = this.#products.find(e => e.id === productId);
         if(!product){
             throw new Error('Product ID not found.')
+        } else{
+            const i = this.#products.findIndex(p => p.id === productId)
+            const update = new Product({ ...product, ...body})
+            this.#products[i] = update
+            update.id = productId
+            await this.#writeProductsFile()
+            return update
         }
-        
-        const index = this.#products.findIndex(p => p.id === productId)
-        const updatedProduct = new Product({...product, ...fields})
-        
-        this.#products[index] = updatedProduct
-        this.#products[index].id = productId
-        await this.#writeProductsFile()
-        return updatedProduct
     }
 
     async deleteProduct(productId){
@@ -90,5 +90,8 @@ export class ProductManager {
         this.#products.splice(productFound, 1)
         
         await this.#writeProductsFile()
+        console.log(`Product ${productId} deleted.`)
     }
 }
+
+export const productsManager = new ProductManager('./database/products.json')

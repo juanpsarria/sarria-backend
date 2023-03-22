@@ -1,13 +1,23 @@
 import express from 'express'
-import { apiProducts } from '../router/products.js'
-import { apiCarts } from '../router/carts.js'
+import { engine } from 'express-handlebars'
+import { Server as SocketIOServer } from 'socket.io'
+import { productsRouter } from './routes/products.js'
+import { cartsRouter } from './routes/carts.js'
+import { viewsRouter } from './routes/views.js'
+import { PORT } from './config.js'
+import { configureProductsSocket } from './sockets/products.sockets.js'
 
 const app = express()
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
 
-app.use(apiProducts)
-app.use(apiCarts)
+app.engine('handlebars', engine())
+app.set('views', './views')
+app.set('view engine', 'handlebars')
+
+app.use(express.static('public'))
+
+app.use('/api/products', productsRouter)
+app.use('/api/carts', cartsRouter)
+app.use('/', viewsRouter)
 
 app.use((error, req, res, next) => {
     switch (error.message) {
@@ -23,4 +33,14 @@ app.use((error, req, res, next) => {
     res.json({ message: error.message })
 })
 
-const server = app.listen(8080)
+//port
+const httpServer = app.listen(PORT, () => {
+    console.log(`App listening on port ${PORT}`)
+})
+
+const io = new SocketIOServer(httpServer)
+
+io.on('connection', async clientSocket => {
+    console.log(`New client online. Socket ID: ${clientSocket}`)
+    configureProductsSocket(io, clientSocket)
+})

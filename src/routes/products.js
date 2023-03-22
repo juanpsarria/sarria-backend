@@ -1,15 +1,14 @@
 import express, { Router } from 'express'
-import { Product } from '../src/Product.js'
-import { ProductManager } from '../src/ProductManager.js'
+import { Product } from '../managers/Product.js'
+import { productsManager } from '../managers/ProductManager.js'
 
-export const apiProducts = Router()
+export const productsRouter = Router()
 
-apiProducts.use(express.json())
-apiProducts.use(express.urlencoded({ extended: true }))
+productsRouter.use(express.json())
+productsRouter.use(express.urlencoded({ extended: true }))
 
-const productsManager = new ProductManager('./database/products.json')
 
-apiProducts.get('/api/products', async (req, res, next) => {
+productsRouter.get('/api/products', async (req, res, next) => {
     try {
         const products = await productsManager.getProducts()
         const limit = req.query.limit
@@ -25,7 +24,7 @@ apiProducts.get('/api/products', async (req, res, next) => {
     }
 })
 
-apiProducts.get('/api/products/:pid', async (req, res, next) => {
+productsRouter.get('/api/products/:pid', async (req, res, next) => {
     try {
         const product = await productsManager.getProductById(parseInt(req.params.pid))
         res.json({product})
@@ -34,7 +33,7 @@ apiProducts.get('/api/products/:pid', async (req, res, next) => {
     }
 })
 
-apiProducts.post('/api/products', async (req, res, next) => {
+productsRouter.post('/api/products', async (req, res, next) => {
     try {
         const newProduct = new Product({ ...req.body, "status": true })
         const addNewProduct = await productsManager.addProduct(newProduct)
@@ -44,7 +43,7 @@ apiProducts.post('/api/products', async (req, res, next) => {
     }
 })
 
-apiProducts.put('/api/products/:pid', async (req, res, next) => {
+productsRouter.put('/api/products/:pid', async (req, res, next) => {
     try {
         const updateProduct = await productsManager.updateProduct(parseInt(req.params.pid))
         res.json({updateProduct})
@@ -53,7 +52,7 @@ apiProducts.put('/api/products/:pid', async (req, res, next) => {
     }
 })
 
-apiProducts.delete('/api/products/:pid', async (req, res, next) => {
+productsRouter.delete('/api/products/:pid', async (req, res, next) => {
     try {
         const deleteProduct = await productsManager.deleteProduct(parseInt(req.params.pid))
         res.json(deleteProduct)

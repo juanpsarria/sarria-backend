@@ -2,7 +2,7 @@ import fs from 'fs/promises'
 import { randomUUID } from 'crypto'
 import { Cart } from './Cart.js'
 
-export class CartManager {
+class CartManager {
     #cartPath
     #productPath
     #carts
@@ -54,8 +54,8 @@ export class CartManager {
         await this.#readCartsFile()
         await this.#readProductsFile()
 
-        const cart = this.#carts.findIndex(c => c.id === cid)
-        if(cart === -1){
+        const i = this.#carts.findIndex(c => c.id === cid)
+        if(i === -1){
             throw new Error('Cart ID does not exist.')
         }
 
@@ -65,15 +65,16 @@ export class CartManager {
         }
 
         //suma un producto nuevo con cantidad 1
-        const index = this.#carts[cart].products.findIndex(e => e.product === pid)
+        const index = this.#carts[i].products.findIndex(e => e.product === pid)
 
         if(index === -1){
-            this.#carts[cart].products.push({product: pid, quantity: 1})
+            this.#carts[i].products.push({product: pid, quantity: 1})
         } else {
-            this.#carts[cart].products[index].quantity++
+            this.#carts[i].products[index].quantity++
         }
         await this.#writeCartsFile()
-        return this.#carts[cart].products
+        return this.#carts[i].products
     }
 }
 
+export const cartsManager = new CartManager('./database/carts.json', './database/products.json')
