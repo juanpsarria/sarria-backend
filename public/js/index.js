@@ -1,5 +1,5 @@
 // @ts-ignore
-const serverSocket = io('http://localhost:8080/')
+const serverSocket = io('http://localhost:8080')
 
 const container = document.getElementById('container')
 
@@ -20,5 +20,15 @@ const template = `
 <h3>No se encuentran productos</h3>
 {{/if}}
 `
+// @ts-ignore
 const compileTemplate = Handlebars.compile(template)
 
+serverSocket.on('refreshProducts', products => {
+    const container = document.getElementById('container')
+    if (container) {
+        container.innerHTML = compileTemplate({
+        products,
+        productsList: products.length > 0
+        })
+    }
+})

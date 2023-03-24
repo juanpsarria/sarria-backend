@@ -9,6 +9,20 @@ import { configureProductsSocket } from './sockets/products.sockets.js'
 
 const app = express()
 
+//port
+const httpServer = app.listen(PORT, () => {
+    console.log(`App listening on port ${PORT}`)
+})
+
+const io = new SocketIOServer(httpServer)
+
+app.use((req, res, next) => {
+    req['io'] = io
+    next()
+})
+
+app.use(express.json())
+
 app.engine('handlebars', engine())
 app.set('views', './views')
 app.set('view engine', 'handlebars')
@@ -33,14 +47,13 @@ app.use((error, req, res, next) => {
     res.json({ message: error.message })
 })
 
-//port
-const httpServer = app.listen(PORT, () => {
-    console.log(`App listening on port ${PORT}`)
-})
-
-const io = new SocketIOServer(httpServer)
 
 io.on('connection', async clientSocket => {
-    console.log(`New client online. Socket ID: ${clientSocket}`)
-    configureProductsSocket(io, clientSocket)
+    console.log(`New client online. Socket ID: ${clientSocket.id}`)
+
+    clientSocket.on('products', data => {
+        console.log(data)
+        clientSocket.broadcast.emit('refreshProducts', data)
+    })
+    //configureProductsSocket(io, clientSocket)
 })

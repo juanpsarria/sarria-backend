@@ -38,6 +38,9 @@ productsRouter.post('/api/products', async (req, res, next) => {
         const newProduct = new Product({ ...req.body, "status": true })
         const addNewProduct = await productsManager.addProduct(newProduct)
         res.json(addNewProduct)
+
+        const products = await productsManager.getProducts()
+        req['io'].sockets.emit('refreshProducts', products)
     } catch (error) {
         next(error)
     }
@@ -45,8 +48,11 @@ productsRouter.post('/api/products', async (req, res, next) => {
 
 productsRouter.put('/api/products/:pid', async (req, res, next) => {
     try {
-        const updateProduct = await productsManager.updateProduct(parseInt(req.params.pid))
+        const updateProduct = await productsManager.updateProduct(parseInt(req.params.pid), req.body)
         res.json({updateProduct})
+
+        const products = await productsManager.getProducts()
+        req['io'].sockets.emit('refreshProducts', products)
     } catch (error) {
         next(error)
     }
@@ -56,6 +62,9 @@ productsRouter.delete('/api/products/:pid', async (req, res, next) => {
     try {
         const deleteProduct = await productsManager.deleteProduct(parseInt(req.params.pid))
         res.json(deleteProduct)
+
+        const products = await productsManager.getProducts()
+        req['io'].sockets.emit('refreshProducts', products)
     } catch (error) {
         next(error)
     }
