@@ -61,7 +61,7 @@ class ProductManager {
         return product
     }
 
-    async updateProduct(productId, body){
+    /* async updateProduct(productId, body){
         await this.#readProductsFile()
 
         //modifica un objeto que se encuentra por id, sin modificar la misma
@@ -76,6 +76,27 @@ class ProductManager {
             await this.#writeProductsFile()
             return update
         }
+    } */
+    
+    async updateProduct(productId, body){
+        await this.#readProductsFile()
+
+        //modifica un objeto que se encuentra por id, sin modificar la misma
+        const i = this.#products.findIndex(p => p.id === productId)
+        if(i === -1){
+            throw new Error('Product ID not found.')
+        }
+        
+        const product = this.#products[i]
+
+        product.title = body.title ?? product.title
+        product.description = body.description ?? product.description
+        product.price = body.price ?? product.price
+        product.stock = body.stock ?? product.stock
+        product.status = body.status ?? product.status
+        
+        await this.#writeProductsFile()
+        return product
     }
 
     async deleteProduct(productId){

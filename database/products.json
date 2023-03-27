@@ -1,9 +1,6 @@
 [
   {
-    "title": "producto prueba 1",
-    "description": "Este es un producto prueba",
     "code": "asd123",
-    "price": 200,
     "status": true,
     "stock": 25,
     "category": "Sin categoría",
@@ -31,5 +28,16 @@
     "category": "Sin categoría",
     "thumbnail": [],
     "id": 3
+  },
+  {
+    "title": "producto prueba 4",
+    "description": "Este es un producto prueba",
+    "code": "abc789",
+    "price": 200,
+    "status": true,
+    "stock": 25,
+    "category": "Sin categoría",
+    "thumbnail": [],
+    "id": 4
   }
 ]
