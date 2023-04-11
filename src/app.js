@@ -1,13 +1,16 @@
 import express from 'express'
 import { engine } from 'express-handlebars'
 import { Server as SocketIOServer } from 'socket.io'
-import { productsRouter } from './routes/products.js'
-import { cartsRouter } from './routes/carts.js'
-import { viewsRouter } from './routes/views.js'
+//import { productsRouter } from './routes/products.js'
+//import { cartsRouter } from './routes/carts.js'
+//import { viewsRouter } from './routes/views.js'
 import { PORT } from './config.js'
-import { configureProductsSocket } from './sockets/products.sockets.js'
+import mongoose from 'mongoose'
+import { productsRouter } from './routes/products.router.js'
+
 
 const app = express()
+app.use(express.json())
 
 //port
 const httpServer = app.listen(PORT, () => {
@@ -16,12 +19,18 @@ const httpServer = app.listen(PORT, () => {
 
 const io = new SocketIOServer(httpServer)
 
+//mongoose
+mongoose.connect('mongodb+srv://juanpsarria:GrisLexa2023@backend-ecommerce.ajja6ie.mongodb.net/?retryWrites=true&w=majority'), (error) =>{
+    if(error){
+        console.log('Cannot connect to database: ' + error)
+        process.exit()
+    }
+}
+
 app.use((req, res, next) => {
     req['io'] = io
     next()
 })
-
-app.use(express.json())
 
 app.engine('handlebars', engine())
 app.set('views', './views')
@@ -29,9 +38,9 @@ app.set('view engine', 'handlebars')
 
 app.use(express.static('public'))
 
-app.use(productsRouter)
-app.use(cartsRouter)
-app.use('/', viewsRouter)
+app.use('/api/products', productsRouter)
+//app.use(cartsRouter)
+//app.use('/', viewsRouter)
 
 app.use((error, req, res, next) => {
     switch (error.message) {
@@ -57,3 +66,5 @@ io.on('connection', async clientSocket => {
     })
     //configureProductsSocket(io, clientSocket)
 })
+
+
