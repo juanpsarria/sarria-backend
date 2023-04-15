@@ -30,3 +30,7 @@ viewsRouter.get('/realtimeproducts', async (req, res, next) => {
         next(error)
     }
 })
+
+viewsRouter.get('/chat', (req, res) => {
+    res.render('chat', { title: 'Chat' })
+})

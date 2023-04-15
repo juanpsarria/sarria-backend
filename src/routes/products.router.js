@@ -6,6 +6,7 @@ export const productsRouter = Router()
 
 productsRouter.use(express.json())
 
+//agregar limit
 productsRouter.get('/', async (req, res, next) => {
     try {
         const products = await productsManager.getProducts()
@@ -43,8 +44,12 @@ productsRouter.post('/', async (req, res, next) => {
     } catch (error) {
         next (error)
     }
+
+    const products = await productsManager.getProducts()
+    req['io'].sockets.emit('refreshProducts', products)
 })
 
+//ver
 productsRouter.put('/:uid', async (req, res, next) => {
     try {
         const {uid} = req.params
@@ -55,6 +60,9 @@ productsRouter.put('/:uid', async (req, res, next) => {
     } catch (error) {
         next (error)
     }
+
+    const products = await productsManager.getProducts()
+    req['io'].sockets.emit('refreshProducts', products)
 })
 
 productsRouter.delete('/:uid', async (req, res, next) => {
@@ -62,7 +70,10 @@ productsRouter.delete('/:uid', async (req, res, next) => {
         const {uid} = req.params
         const result = await productsManager.deleteProduct({_id: uid})
         res.json({status: 'success', payload: result})
-} catch (error){
-    next (error)
-}
+    } catch (error){
+        next (error)
+    }
+
+    const products = await productsManager.getProducts()
+    req['io'].sockets.emit('refreshProducts', products)
 })

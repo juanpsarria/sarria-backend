@@ -3,10 +3,13 @@ import { engine } from 'express-handlebars'
 import { Server as SocketIOServer } from 'socket.io'
 //import { productsRouter } from './routes/products.js'
 //import { cartsRouter } from './routes/carts.js'
-//import { viewsRouter } from './routes/views.js'
+import { viewsRouter } from './routes/views.router.js'
 import { PORT } from './config.js'
 import mongoose from 'mongoose'
 import { productsRouter } from './routes/products.router.js'
+import { cartsRouter } from './routes/carts.router.js'
+import { configureProductsSocket } from './sockets/products.sockets.js'
+import { configureMessagesSocket } from './sockets/messages.sockets.js'
 
 
 const app = express()
@@ -20,7 +23,7 @@ const httpServer = app.listen(PORT, () => {
 const io = new SocketIOServer(httpServer)
 
 //mongoose
-mongoose.connect('mongodb+srv://juanpsarria:GrisLexa2023@backend-ecommerce.ajja6ie.mongodb.net/?retryWrites=true&w=majority'), (error) =>{
+mongoose.connect('mongodb+srv://coderprueba1:coderprueba1@backend-ecommerce.ajja6ie.mongodb.net/ecommerce'), (error) =>{
     if(error){
         console.log('Cannot connect to database: ' + error)
         process.exit()
@@ -39,8 +42,8 @@ app.set('view engine', 'handlebars')
 app.use(express.static('public'))
 
 app.use('/api/products', productsRouter)
-//app.use(cartsRouter)
-//app.use('/', viewsRouter)
+app.use('/api/carts', cartsRouter)
+app.use('/', viewsRouter)
 
 app.use((error, req, res, next) => {
     switch (error.message) {
@@ -57,14 +60,11 @@ app.use((error, req, res, next) => {
 })
 
 
-io.on('connection', async clientSocket => {
-    console.log(`New client online. Socket ID: ${clientSocket.id}`)
-
-    clientSocket.on('products', data => {
-        console.log(data)
-        clientSocket.broadcast.emit('refreshProducts', data)
-    })
-    //configureProductsSocket(io, clientSocket)
+io.on('connection', async socket => {
+    console.log(`New client online. Socket ID: ${socket.id}`)
+    configureProductsSocket(io, socket)
+    configureMessagesSocket(io, socket)
 })
+
 
 

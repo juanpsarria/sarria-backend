@@ -1,4 +1,3 @@
-// @ts-ignore
 import mongoose from "mongoose";
 import { productModel } from "../models/product.model.js"
 
@@ -22,31 +21,33 @@ class ProductManager{
 
     async getProductById(id){
         const product = await this.#productsDb.findById(id).lean()
+        if(!product){
+            throw new Error('Product ID not found.')
+        }
         return product
     }
 
-    async updateProduct(id, data){
-        let product = await this.getProductById(id)
-        const newData = data
+    //ver
+    async updateProduct(id, body){
+        const filter = id
+        if(!id){
+            throw new Error('Product ID not found.')
+        }
 
-        // @ts-ignore
-        product.description = newData.description ?? product.description
-        // @ts-ignore
-        product.thumbnail = newData.thumbnail ?? product.thumbnail
-        // @ts-ignore
-        product.title = newData.title ?? product.title
-        // @ts-ignore
-        product.price = newData.price ?? product.price
-        // @ts-ignore
-        product.stock = newData.stock ?? product.stock
+        const update = body
 
-        // @ts-ignore
-        product = await this.#productsDb.updateOne(id, product)
-        return product
+        let result = await this.#productsDb.findOneAndUpdate(filter, update, {
+            new: true
+        })
+
+        return result
     }
 
     async deleteProduct(id){
         const product = await this.#productsDb.deleteOne(id)
+        if(!product){
+            throw new Error('Product ID not found.')
+        }
         return product
     }
 }

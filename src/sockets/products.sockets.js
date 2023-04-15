@@ -1,4 +1,4 @@
-import { productsManager } from "../managers/ProductManager.js"
+import { productsManager } from "../dao/managersDB/ProductManager.DB.js"
 
 export function configureProductsSocket(io, socket) {
     socket.on('newProduct', prod => {
