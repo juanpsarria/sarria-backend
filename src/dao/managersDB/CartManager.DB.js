@@ -31,12 +31,11 @@ class CartManager{
         const product = await productsManager.getProductById(productId)
         const pid = product._id.toString()
 
-        const i = cid.products.findIndex(p => p.product == pid)
+        const i = cid.products.findIndex(p => p.product === pid)
         if(i === -1){
             cid.products.push({product: pid, quantity: 1})
         } else {
-            let item = cid.products[i]
-            item.quantity = item.quantity++
+            cid.products[i].quantity++
         }
 
         const result = this.#cartsDB.updateOne(cid)
