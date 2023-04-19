@@ -12,6 +12,7 @@ const template = `
             <h3>Producto: {{this.title}}</h3>
             <p>{{this.description}}</p>
             <p>Precio: {{this.price}}</p>
+            <p>Código: {{this.code}}</p>
         </div>
     </div>
     {{/each}}

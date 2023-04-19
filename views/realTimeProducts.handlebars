@@ -1,5 +1,21 @@
 <h1>PRODUCTOS EN TIEMPO REAL</h1>
 <div id='container'></div>
+{{#if productsList}}
+<ul>
+    {{#each products}}
+    <div id="container">
+        <div id="cart">
+            <h3>Producto: {{this.title}}</h3>
+            <p>{{this.description}}</p>
+            <p>Precio: {{this.price}}</p>
+            <p>Código: {{this.code}}</p>
+        </div>
+    </div>
+    {{/each}}
+</ul>
+{{else}}
+<h3>No se encuentran productos</h3>
+{{/if}}
 
 <script src="/socket.io/socket.io.js"></script>
-<script src="/js/index.js"></script>
+<script src="/js/realTimeProducts.js"></script>

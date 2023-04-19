@@ -7,6 +7,15 @@
 
 <h3>Historial de mensajes</h3>
 <div id="chatBox"></div>
+{{!-- {{#if msgList}}
+<ul>
+    {{#each msg}}
+    <li>({{this.date}}) {{this.user}}: {{this.message}}</li>
+    {{/each}}
+</ul>
+{{else}}
+<p>No se encuentran mensajes.</p>
+{{/if}} --}}
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/chat.js"></script>

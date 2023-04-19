@@ -1,43 +1,44 @@
 // @ts-ignore
-const socket = io()
+const socket = io('http://localhost:8080')
 
-const user = document.getElementById("user")
-const newMessage = document.getElementById("message")
+
 const sendButton = document.getElementById("sendButton")
 
 
 sendButton?.addEventListener('click', e => {
-    if(user instanceof HTMLInputElement && newMessage instanceof HTMLInputElement && user.value && newMessage.value){
-        const msg = {
-            user: user.value,
-            message: newMessage.value
-        }
-        socket.emit('newMessage', msg)
+
+    const inputUser = document.getElementById("user")
+    const inputMessage = document.getElementById("message")
+    
+    if(inputUser instanceof HTMLInputElement && inputMessage instanceof HTMLInputElement && inputUser.value && inputMessage.value){
+        const user = inputUser.value
+        const message = inputMessage.value
+        socket.emit('newMsg', {user, message})
     }
+
 })
 
 const messagesTemplate = `
-{{#if hayMensajes}}
+{{#if msgList}}
 <ul>
-    {{#each mensajes}}
-    <li>{{this.user}}: {{this.message}}</li>
+    {{#each msg}}
+    <li>({{this.date}}) {{this.user}}: {{this.message}}</li>
     {{/each}}
 </ul>
 {{else}}
-No hay mensajes
+<p>No se encuentran mensajes.</p>
 {{/if}}`
 
 // @ts-ignore
 const showMessages = Handlebars.compile(messagesTemplate)
 
-socket.on('mensajes', mensajes => {
+socket.on('refreshMsg', msg => {
     const chatBox = document.getElementById("chatBox")
     if(chatBox){
         chatBox.innerHTML = showMessages({
-            hayMensajes: mensajes.length > 0,
-            mensajes
+            msg,
+            msgList: msg.length > 0,
         })
     }
 })
 
-socket.emit('refrescarMensajes')

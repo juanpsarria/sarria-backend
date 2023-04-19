@@ -34,12 +34,12 @@ viewsRouter.get('/realtimeproducts', async (req, res, next) => {
 
 viewsRouter.get('/chat', async (req, res, next) => {
     try {
-        const messages = await messagesManager.getMessages()
-        const messagesList = messages.length > 0
+        const msg = await messagesManager.getMessages()
+        const msgList = msg.length > 0
         res.render('chat', { 
             title: 'Chat',
-            messagesList,
-            messages
+            msgList,
+            msg
         })
     } catch (error) {
         next(error)

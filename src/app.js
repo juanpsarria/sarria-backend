@@ -1,8 +1,6 @@
 import express from 'express'
 import { engine } from 'express-handlebars'
 import { Server as SocketIOServer } from 'socket.io'
-//import { productsRouter } from './routes/products.js'
-//import { cartsRouter } from './routes/carts.js'
 import { viewsRouter } from './routes/views.router.js'
 import { PORT } from './config.js'
 import mongoose from 'mongoose'
@@ -35,12 +33,14 @@ app.use((req, res, next) => {
     next()
 })
 
+//handlebars
 app.engine('handlebars', engine())
 app.set('views', './views')
 app.set('view engine', 'handlebars')
 
 app.use(express.static('public'))
 
+//routers
 app.use('/api/products', productsRouter)
 app.use('/api/carts', cartsRouter)
 app.use('/', viewsRouter)
@@ -67,10 +67,8 @@ io.on('connection', async socket => {
         socket.broadcast.emit('refreshProducts', data)
     })
 
-    socket.on('messages', data => {
-        console.log(data)
-        socket.broadcast.emit('refrescarMensajes', data)
-    })
+    configureMessagesSocket(io, socket)
+
 })
 
 

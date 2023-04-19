@@ -1,13 +1,15 @@
 import { messagesManager } from "../dao/managersDB/MessageManager.DB.js"
 
-export function configureMessagesSocket(io, socket) {
+export async function configureMessagesSocket(io, socket) {
 
-    socket.on('newMessage', msg => {
-        messagesManager.sendMessage(msg)
-        io.sockets.emit('mensajes', messagesManager.getMessages())
+    socket.on('newMsg', async msg => {
+        await messagesManager.sendMessage({
+            date: new Date().toLocaleString(),
+            ...msg
+        })
+        io.sockets.emit('refreshMsg', await messagesManager.getMessages())
     })
 
-    socket.on('refrescarMensajes', () => {
-        io.sockets.emit('newMessage', messagesManager.getMessages())
-    })
+    io.sockets.emit('refreshMsg', await messagesManager.getMessages())
+    
 }
