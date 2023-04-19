@@ -1,51 +1,52 @@
 import mongoose from "mongoose";
 import { productModel } from "../models/product.model.js"
 
-class ProductManager{
+class ProductManager {
     #productsDb
 
-    constructor(){
+    constructor() {
         this.#productsDb = productModel
     }
 
-    async addProduct(data){
+    async addProduct(data) {
         let product = await this.#productsDb.create(data)
         product = JSON.parse(JSON.stringify(product))
         return product
     }
 
-    async getProducts(){
+    async getProducts() {
         const product = await this.#productsDb.find().lean()
         return product
     }
 
-    async getProductById(id){
+    async getProductById(id) {
         const product = await this.#productsDb.findById(id).lean()
-        if(!product){
+        if (!product) {
             throw new Error('Product ID not found.')
         }
         return product
     }
 
-    //ver
-    async updateProduct(id, body){
-        const filter = id
-        if(!id){
-            throw new Error('Product ID not found.')
+    async updateProduct(id, body) {
+        const product = await this.#productsDb.findOne({_id: id})
+
+        if(product){
+            product.title = body.title
+            product.description = body.description
+            product.code = body.code
+            product.price = body.price
+            product.status = body.status
+            product.stock = body.stock
+            product.category = body.category
+            product.thumbnail = body.thumbnail
+            await product.save()
         }
-
-        const update = body
-
-        let result = await this.#productsDb.findOneAndUpdate(filter, update, {
-            new: true
-        })
-
-        return result
+        return product
     }
 
-    async deleteProduct(id){
+    async deleteProduct(id) {
         const product = await this.#productsDb.deleteOne(id)
-        if(!product){
+        if (!product) {
             throw new Error('Product ID not found.')
         }
         return product

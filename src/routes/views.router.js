@@ -1,5 +1,6 @@
 import { Router } from 'express'
-import { productsManager } from '../dao/managers/ProductManager.js'
+import { productsManager } from '../dao/managersDB/ProductManager.DB.js'
+import { messagesManager } from '../dao/managersDB/MessageManager.DB.js'
 
 export const viewsRouter = Router()
 
@@ -31,6 +32,16 @@ viewsRouter.get('/realtimeproducts', async (req, res, next) => {
     }
 })
 
-viewsRouter.get('/chat', (req, res) => {
-    res.render('chat', { title: 'Chat' })
+viewsRouter.get('/chat', async (req, res, next) => {
+    try {
+        const messages = await messagesManager.getMessages()
+        const messagesList = messages.length > 0
+        res.render('chat', { 
+            title: 'Chat',
+            messagesList,
+            messages
+        })
+    } catch (error) {
+        next(error)
+    }
 })

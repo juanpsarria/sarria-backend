@@ -49,14 +49,10 @@ productsRouter.post('/', async (req, res, next) => {
     req['io'].sockets.emit('refreshProducts', products)
 })
 
-//ver
 productsRouter.put('/:uid', async (req, res, next) => {
     try {
-        const {uid} = req.params
-        const product = req.body
-        
-        const result = await productsManager.updateProduct({_id: uid}, product)
-        res.send({ status: 'success', payload: result})
+        const result = await productsManager.updateProduct(req.params.uid, req.body)
+        res.send({ status: 'success', payload: result })
     } catch (error) {
         next (error)
     }

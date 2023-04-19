@@ -62,8 +62,15 @@ app.use((error, req, res, next) => {
 
 io.on('connection', async socket => {
     console.log(`New client online. Socket ID: ${socket.id}`)
-    configureProductsSocket(io, socket)
-    configureMessagesSocket(io, socket)
+    socket.on('products', data => {
+        console.log(data)
+        socket.broadcast.emit('refreshProducts', data)
+    })
+
+    socket.on('messages', data => {
+        console.log(data)
+        socket.broadcast.emit('refrescarMensajes', data)
+    })
 })
 
 

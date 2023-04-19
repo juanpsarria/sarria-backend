@@ -37,9 +37,8 @@ class CartManager{
         } else {
             cid.products[i].quantity++
         }
-
-        const result = this.#cartsDB.updateOne(cid)
-        return result
+        await this.#cartsDB.updateOne({_id: cid._id}, cid)
+        return cid
     }
 }
 
