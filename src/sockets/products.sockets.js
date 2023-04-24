@@ -1,12 +1,8 @@
 import { productsManager } from "../dao/managersDB/ProductManager.DB.js"
 
-export function configureProductsSocket(io, socket) {
-    socket.on('newProduct', prod => {
-        productsManager.addProduct(prod)
-        io.sockets.emit('products', productsManager.getProducts)
+export async function configureProductsSocket(io, socket) {
+    socket.on('refreshProducts', async prod => {
+        await productsManager.getProducts()
     })
-
-    socket.on('refreshProducts', () => {
-        io.sockets.emit('products', productsManager.getProducts())
-    })
+    io.sockets.emit('refreshProducts', await productsManager.getProducts())
 }

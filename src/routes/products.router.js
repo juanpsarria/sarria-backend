@@ -6,10 +6,14 @@ export const productsRouter = Router()
 
 productsRouter.use(express.json())
 
-//agregar limit
 productsRouter.get('/', async (req, res, next) => {
     try {
         const products = await productsManager.getProducts()
+
+        const pagination = {
+            limit: req.query.limit || 10,
+            page: req.query.page || 1,
+        }
         res.json({ result: 'success', payload: products})
     } catch (error){
         next(error)

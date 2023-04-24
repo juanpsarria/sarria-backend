@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import { productsManager } from '../dao/managersDB/ProductManager.DB.js'
 import { messagesManager } from '../dao/managersDB/MessageManager.DB.js'
+import { cartsManager } from '../dao/managersDB/CartManager.DB.js'
 
 export const viewsRouter = Router()
 
@@ -43,5 +44,19 @@ viewsRouter.get('/chat', async (req, res, next) => {
         })
     } catch (error) {
         next(error)
+    }
+})
+
+viewsRouter.get('carts/:cid', async (req, res, next) => {
+    try {
+        const cart = await cartsManager.getCartById(req.params.cid)
+        const productList = cart.products.length > 0
+        res.render('cart', {
+            title: 'Carrito de compras',
+            productList,
+            cart
+        })
+    } catch (error){
+        next (error)
     }
 })

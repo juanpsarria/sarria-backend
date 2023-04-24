@@ -26,19 +26,62 @@ class CartManager{
         return cart
     }
 
-    async AddToCart(cartId, productId){
-        const cid = await this.getCartById(cartId)
+    async addToCart(cartId, productId){
+        const cart = await this.getCartById(cartId)
         const product = await productsManager.getProductById(productId)
-        const pid = product._id.toString()
+        const pid = product._id
 
-        const i = cid.products.findIndex(p => p.product === pid)
-        if(i === -1){
-            cid.products.push({product: pid, quantity: 1})
-        } else {
-            cid.products[i].quantity++
+        const i = cart.products.findIndex(p => p.product._id.toString() === pid.toString())
+        if( i === -1){
+            cart.products.push({product: pid, quantity: 1})
+        }else {
+            cart.products[i].quantity++
         }
-        await this.#cartsDB.updateOne({_id: cid._id}, cid)
-        return cid
+        await this.#cartsDB.updateOne({_id: cart._id}, cart)
+        return cart
+    }
+
+    async deleteFromCart(cartId, productId){
+        const cart = await this.getCartById(cartId)
+        const product = await productsManager.getProductById(productId)
+        const pid = product._id
+
+        const i = cart.products.findIndex(p => p.product._id.toString() === pid.toString())
+        cart.products.splice(i, 1)
+
+        await this.#cartsDB.updateOne({_id: cart._id}, cart)
+        return cart
+    }
+
+    async deleteAllProducts(cartId){
+        const cart = await this.getCartById(cartId)
+        cart.products = []
+        await this.#cartsDB.updateOne({_id: cart._id}, cart)
+        return cart
+    }
+
+    async updateCart(cartId, body){
+        const cart = await this.#cartsDB.findOne({_id: cartId})
+        if(cart){
+            cart.products = body.products
+            await cart.save()
+        }
+        return cart
+    }
+
+    async updateQuantity(cartId, productId, body){
+        const cart = await this.getCartById(cartId)
+        const product = await productsManager.getProductById(productId)
+        const pid = product._id
+
+        const i = cart.products.findIndex(p => p.product._id.toString() === pid.toString())
+        if( i === -1){
+            throw new Error('Product ID does not exist in cart')
+        }else {
+            cart.products[i].quantity = body.quantity
+        }
+        await this.#cartsDB.updateOne({_id: cart._id}, cart)
+        return cart
     }
 }
 

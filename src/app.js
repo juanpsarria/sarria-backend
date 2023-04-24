@@ -8,6 +8,7 @@ import { productsRouter } from './routes/products.router.js'
 import { cartsRouter } from './routes/carts.router.js'
 import { configureProductsSocket } from './sockets/products.sockets.js'
 import { configureMessagesSocket } from './sockets/messages.sockets.js'
+//import { configureCartSocket } from './sockets/cart.sockets.js'
 
 
 const app = express()
@@ -62,13 +63,10 @@ app.use((error, req, res, next) => {
 
 io.on('connection', async socket => {
     console.log(`New client online. Socket ID: ${socket.id}`)
-    socket.on('products', data => {
-        console.log(data)
-        socket.broadcast.emit('refreshProducts', data)
-    })
-
+    configureProductsSocket(io, socket)
     configureMessagesSocket(io, socket)
 
+    //configureCartSocket(io, socket)
 })
 
 
