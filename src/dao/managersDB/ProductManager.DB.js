@@ -14,9 +14,36 @@ class ProductManager {
         return product
     }
 
-    async getProducts() {
+    async getProducts(){
         const product = await this.#productsDb.find().lean()
         return product
+    }
+
+    async getProductsWithPagination(limit, page, query, sort) {
+        const pageQuery = {}
+
+        const options = {
+            limit: limit || 10,
+            page: page || 1,
+            sort: {} || { price: sort },
+            lean: true
+        }
+
+        // @ts-ignore
+        const result = await this.#productsDb.paginate(pageQuery, options)
+        return {
+            status: result.status,
+            payload: result.docs,
+            totalPages: result.totalPages,
+            prevPage: result.prevPage,
+            nextPage: result.nextPage,
+            page: result.page,
+            limit: result.limit,
+            hasPrevPage: result.hasPrevPage,
+            hasNextPage: result.hasNextPage,
+            prevLink: result.hasPrevPage === false ? null : result.prevLink,
+            nextLink: result.hasNextPage === false ? null : result.NextLink
+        }
     }
 
     async getProductById(id) {
@@ -25,6 +52,14 @@ class ProductManager {
             throw new Error('Product ID not found.')
         }
         return product
+    }
+
+    async getProductsByCategory(category){
+
+    }
+
+    async getProductsByStatus(status){
+
     }
 
     async updateProduct(id, body) {

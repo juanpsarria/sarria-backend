@@ -8,12 +8,7 @@ productsRouter.use(express.json())
 
 productsRouter.get('/', async (req, res, next) => {
     try {
-        const products = await productsManager.getProducts()
-
-        const pagination = {
-            limit: req.query.limit || 10,
-            page: req.query.page || 1,
-        }
+        const products = await productsManager.getProductsWithPagination(req.query.limit,req.query.page,req.query.query, req.query.sort)
         res.json({ result: 'success', payload: products})
     } catch (error){
         next(error)

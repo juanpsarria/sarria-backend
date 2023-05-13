@@ -26,6 +26,14 @@ class CartManager{
         return cart
     }
 
+    async getProductsInCart(id){
+        const cart = await this.#cartsDB.findById(id).lean()
+        if(!cart){
+            throw new Error('Cart ID does not exist.')
+        }
+        return cart.products
+    }
+
     async addToCart(cartId, productId){
         const cart = await this.getCartById(cartId)
         const product = await productsManager.getProductById(productId)
@@ -86,3 +94,7 @@ class CartManager{
 }
 
 export const cartsManager = new CartManager()
+
+/* const asd = await cartsManager.getProductsInCart("643984a286a54da4970ac05d")
+
+console.log(asd) */

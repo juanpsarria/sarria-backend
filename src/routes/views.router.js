@@ -47,14 +47,35 @@ viewsRouter.get('/chat', async (req, res, next) => {
     }
 })
 
-viewsRouter.get('carts/:cid', async (req, res, next) => {
+viewsRouter.get('/products', async (req, res, next) => {
+    try {
+        const product = await productsManager.getProductsWithPagination(req.query.limit,req.query.page,req.query.query, req.query.sort)
+        res.render('products', {
+            title: 'Productos',
+            productsList: product.payload.length > 0,
+            products: product.payload,
+            page: product.page,
+            totalPages: product.totalPages,
+            hasNextPage: product.hasNextPage,
+            nextPage: product.nextPage,
+            hasPrevPage: product.hasPrevPage,
+            prevPage: product.prevPage,
+            pagingCounter: product.pagingCounter
+        })
+    } catch (error){
+        next (error)
+    }
+})
+
+viewsRouter.get('/carts/:cid', async (req, res, next) => {
     try {
         const cart = await cartsManager.getCartById(req.params.cid)
-        const productList = cart.products.length > 0
-        res.render('cart', {
+        const products = cart.products
+        //const productList = products.length > 0
+        res.render('carts', {
             title: 'Carrito de compras',
-            productList,
-            cart
+            productList: cart.products.length > 0,
+            products: cart.products
         })
     } catch (error){
         next (error)
